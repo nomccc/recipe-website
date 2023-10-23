@@ -1,6 +1,6 @@
 import React from "react";
-import Card from "../../components/Card/Card";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import Card from "../../../components/Card/Card";
+import Sidebar from "../../../components/Sidebar/Sidebar";
 
 const ReadRecipe = () => {
   return (

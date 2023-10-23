@@ -2,10 +2,10 @@ import React, { Children } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import LandingPage from '../pages/LandingPage/LandingPage'
 import Dashboard from '../pages/Dashboard/Dashboard'
-import CreateRecipe from '../pages/Admin/CreateRecipe'
-import ReadRecipe from '../pages/Admin/ReadRecipe'
-import UpdateRecipe from '../pages/Admin/UpdateRecipe'
-import DeleteRecipe from '../pages/Admin/DeleteRecipe'
+import CreateRecipe from '../pages/Admin/CreateRecipe/CreateRecipe'
+import ReadRecipe from '../pages/Admin/ReadRecipe/ReadRecipe'
+import UpdateRecipe from '../pages/Admin/UpdateRecipe/UpdateRecipe'
+import DeleteRecipe from '../pages/Admin/DeleteRecipe/DeleteRecipe'
 
 const Routing = () => {
   return (

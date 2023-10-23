@@ -6,7 +6,7 @@ import { IoAddCircleOutline, IoBookOutline,IoPencilOutline, IoTrashBinOutline, I
 const Sidebar = ({ children }) => {
   return (
     <div className="flex">
-      <div className="w-1/6 h-screen shadow-xl ">
+      <div className="w-1/6 h-auto shadow-xl ">
         <h1 className="pt-16 pb-6 text-center font-bold text-lg">
           Halo, Avivah
         </h1>
@@ -55,7 +55,7 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
       </div>
-      <div className="flex-1 h-screen relative container m-10">
+      <div className="flex-1  relative container m-10">
         <h1>{children}</h1>
       </div>
     </div>
