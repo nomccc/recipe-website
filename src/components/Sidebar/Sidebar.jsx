@@ -15,7 +15,7 @@ const Sidebar = ({ children }) => {
           <h1 className="font-medium text-white">DASHBOARD</h1>
         </div>
         <div className="flex flex-col px-auto items-start ms-8  gap-y-5">
-          <div className="flex flex-row justify-center items-center  gap-2 hover:text-orange-500 hover:font-semibold py-2">
+          <div className="flex flex-row justify-center items-center  gap-2 hover:text-orange-500 hover:font-semibold py-2 mt-5">
             <span className="">
               <IoAddCircleOutline />
             </span>
@@ -26,26 +26,10 @@ const Sidebar = ({ children }) => {
               <IoBookOutline/>
             </span>
             <Link to={"/readRecipe"} >
-              Read Recipe
+              Recipe
             </Link>
           </div>
-          <div className="flex flex-row justify-center items-center gap-2 hover:text-orange-500  hover:font-semibold py-2">
-            <span className="">
-              <IoPencilOutline />
-            </span>
-          <Link to={"/updateRecipe"}>
-            Update Recipe
-          </Link>
-          </div>
-          <div className="flex flex-row justify-center items-center gap-2 hover:text-orange-500 hover:font-semibold py-2">
-            <span className="">
-              <IoTrashBinOutline/>
-            </span>
-          <Link to={"/deleteRecipe"} >
-            Delete Recipe
-          </Link>
-          </div>
-          <div className="flex flex-row justify-center items-center gap-2 hover:text-orange-500 hover:font-semibold py-2">
+          <div className="flex flex-row justify-center items-center gap-2 hover:text-orange-500 hover:font-semibold py-2 mb-8">
             <span className="">
               <IoLogOutOutline/>
             </span>

@@ -14,9 +14,7 @@ const Header = () => {
           <li>
             <a href="#">Resep</a>
           </li>
-          <li>
-            <a href="#">Tentang Kami</a>
-          </li>
+          <Link to="/kontribusi">Ayo Kontribusi!</Link>
         </ul>
       </div>
       <div className="basis-1/4 px-4 flex justify-end items-center">
