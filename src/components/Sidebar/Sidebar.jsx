@@ -1,9 +1,25 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { IoAddCircleOutline, IoBookOutline,IoPencilOutline, IoTrashBinOutline, IoLogOutOutline } from "react-icons/io5";
-
+import { Link, useNavigate } from "react-router-dom";
+import {
+  IoAddCircleOutline,
+  IoBookOutline,
+  IoLogOutOutline,
+} from "react-icons/io5";
+import { createClient } from "@supabase/supabase-js";
 
 const Sidebar = ({ children }) => {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_ANON_PUBLIC_SUPABASE;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const navigate = useNavigate();
+
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    sessionStorage.removeItem('token')
+    navigate("/");
+  }
+
   return (
     <div className="flex">
       <div className="w-1/6 h-auto shadow-xl ">
@@ -23,19 +39,15 @@ const Sidebar = ({ children }) => {
           </div>
           <div className="flex flex-row justify-center items-center gap-2 hover:text-orange-500 hover:font-semibold py-2">
             <span className="">
-              <IoBookOutline/>
+              <IoBookOutline />
             </span>
-            <Link to={"/readRecipe"} >
-              Recipe
-            </Link>
+            <Link to={"/readRecipe"}>Recipe</Link>
           </div>
           <div className="flex flex-row justify-center items-center gap-2 hover:text-orange-500 hover:font-semibold py-2 mb-8">
             <span className="">
-              <IoLogOutOutline/>
+              <IoLogOutOutline />
             </span>
-          <Link to={"#"} >
-            Logout
-          </Link>
+            <button onClick={() => signOut()}>Logout</button>
           </div>
         </div>
       </div>

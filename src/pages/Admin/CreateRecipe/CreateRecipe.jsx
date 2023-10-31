@@ -4,32 +4,43 @@ import Input from "../../../components/Input/Input";
 import Button from "../../../components/Button/Button";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import parse from "html-react-parser";
 import { postRecipe } from "../../../api/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+
 
 const CreateRecipe = () => {
   const [berhasil, setBerhasil] = useState(false);
 
-  const classInput = " bg-white px-4 py-1 border-2 rounded-lg";
-  const editorRef = useRef(null);
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-    }
-  };
+  const navigate = useNavigate()
 
-  const notify = () => toast.success('Buat resep berhasil!', {
-    position: "top-center",
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-    });;
+  const classInput = " bg-white px-4 py-1 border-2 rounded-lg";
+
+  const notifySuccess = () =>
+    toast.success("Buat resep berhasil!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const notifyFailed = () => {
+    toast.error("Buat resep gagal!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
 
   const [recipe, setRecipe] = useState({
     id: 1,
@@ -68,72 +79,41 @@ const CreateRecipe = () => {
     }
   }
 
-  function cekResepValid() {
-    const isiResep = [
-      recipe.pembuatResep,
-      recipe.namaResep,
-      recipe.deskripsiResep,
-      recipe.waktuResep,
-      recipe.porsiResep,
-      recipe.gambarResep,
-      recipe.bahanResep,
-      recipe.intruksiResep,
-    ];
+  function checkSubmit(event) {
+    // menghitung id berdasarkan id sebelumnya
+    event.preventDefault()
+    const newId = recipe.id + 1;
 
-    const isNamaResepValid = isiResep.every((item) => {
-      // Melakukan pengecekan apakah item adalah namaResep yang kosong atau null
-      return (item !== recipe.namaResep.trim()) === "" || item === null;
+    const newRecipe = {
+      ...recipe,
+      id: newId,
+    };
+
+    //  dorong data ke mockapi
+    postRecipe(recipe);
+
+    // Reset form
+    setRecipe({
+      id: newRecipe,
+      productName: "",
+      productCategory: "",
+      productImage: "",
+      productFreshness: "",
+      productDescription: "",
+      productPrice: "",
     });
 
-    return isNamaResepValid;
-  }
-
-  function checkSubmit(event) {
-    if (!cekResepValid) {
-      setBerhasil(false);
-      console.log("tidak valid");
-    } else {
-      event.preventDefault();
-
-      // menghitung id berdasarkan id sebelumnya
-      const newId = recipe.id + 1;
-
-      const newRecipe = {
-        ...recipe,
-        id: newId,
-      };
-
-      //  dorong data ke mockapi
-      postRecipe(recipe);
-
-      // Reset form
-      setRecipe({
-        id: newRecipe,
-        productName: "",
-        productCategory: "",
-        productImage: "",
-        productFreshness: "",
-        productDescription: "",
-        productPrice: "",
-      });
-
-      setBerhasil(true);
-      notify()
-    }
+    setBerhasil(true);
+    navigate('/readRecipe')
+    notifySuccess();
   }
 
   return (
     <Sidebar>
-      {!berhasil ? (
-        <ToastContainer
-        
-        />
-      ) : (
-        ""
-      )}
+      {/* {!berhasil ? <ToastContainer /> : ""} */}
       <div>
         <ToastContainer
-          position="top-center"
+          position="top-right"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -183,7 +163,6 @@ const CreateRecipe = () => {
               value={recipe.pembuatResep}
               onChange={(e) => {
                 setRecipe((old) => {
-                  console.log(e.target.value);
                   return {
                     ...old,
                     pembuatResep: e.target.value,

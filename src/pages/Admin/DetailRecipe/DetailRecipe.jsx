@@ -1,21 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { deleteRecipe, getRecipe } from "../../../api/api";
-import { data } from "autoprefixer";
+import { toast } from "react-toastify";
 
 const DetailRecipe = () => {
   const [loading, setLoading] = useState(false);
   const [recipe, setRecipe] = useState([]);
 
+  const navigate = useNavigate()
+
+  const notifySuccess = () =>
+  toast.success("Hapus resep berhasil!", {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+
   // narik params
   const pull = useParams();
   const id = pull.id;
 
-  const correctIndex = (x) => {
-    return (x -= 1);
-  };
+  const fetchData = (id) => {
+    return recipe.filter(recipe => recipe.id == id)
+  }
 
   // inisialisasi location buat tarik data dari state
   const location = useLocation();
@@ -55,9 +69,11 @@ const DetailRecipe = () => {
           recipe.length > 0 ? (
             <div>
               <div className="text-center flex justify-end ">
+                <Link to={`/updateRecipe/${id}`}>
                 <button className="bg-yellow-400 px-4 py-2 rounded-md mx-5 text-white hover:bg-orange-400">
                   Edit
                 </button>
+                </Link>
                 {/* Open the modal using document.getElementById('ID').showModal() method */}
                 <button
                   className="btn-error px-4 py-2 rounded-md mx-5 text-white hover:bg-orange-400"
@@ -74,7 +90,7 @@ const DetailRecipe = () => {
                   <div className="modal-box">
                     <h3 className="font-bold text-lg">
                       Apakah kamu yakin menghapus resep{" "}
-                      {recipe[correctIndex(id)].namaResep} ?
+                      {fetchData(id)[0].namaResep} ?
                     </h3>
 
                     <div className="modal-action">
@@ -82,7 +98,11 @@ const DetailRecipe = () => {
                         {/* if there is a button in form, it will close the modal */}
                         <button
                           className="btn mx-4 bg-red-600 text-white hover:bg-red-800"
-                        
+                        onClick={(e) => {
+                          hapusData(id)
+                          navigate('/readRecipe')
+                          notifySuccess()
+                        }}
                         >
                           Hapus
                         </button>
@@ -94,13 +114,14 @@ const DetailRecipe = () => {
               </div>
               <article>
                 <h1 className="font-bold text-7xl">
-                  {recipe[correctIndex(id)].namaResep}
+                  {fetchData(id)[0].namaResep}
+                  {/* {fetchData(id)[0].namaResep} */}
                 </h1>
                 <h3 className="my-3 font-semibold text-lg text-slate-500">
-                  Resep oleh: {recipe[correctIndex(id)].pembuatResep}
+                  Resep oleh: {fetchData(id)[0].pembuatResep}
                 </h3>
                 <p className="py-3">
-                  {recipe[correctIndex(id)].deskripsiResep}
+                  {fetchData(id)[0].deskripsiResep}
                 </p>
                 <img
                   className="w-full h-96 object-cover rounded-xl"
@@ -114,26 +135,26 @@ const DetailRecipe = () => {
                     WAKTU PEMBUATAN
                   </p>
                   <p className="text-xl">
-                    {recipe[correctIndex(id)].waktuResep}
+                    {fetchData(id)[0].waktuResep}
                   </p>
                 </div>
                 <div className="border-x-2 px-10">
                   <p className="text-slate-600 font-semibold">PORSI</p>
                   <p className="text-xl">
-                    {recipe[correctIndex(id)].porsiResep}
+                    {fetchData(id)[0].porsiResep}
                   </p>
                 </div>
               </div>
               <div className=" my-10  flex px-16  ">
                 <div className="flex-1">
                   <h1 className="font-bold text-4xl my-4">Bahan-Bahan</h1>
-                  {parseData(recipe[correctIndex(id)].bahanResep)}
+                  {parseData(fetchData(id)[0].bahanResep)}
                 </div>
                 <div className="flex-1">
                   <h1 className="font-bold text-4xl my-4">
                     Intruksi Pembuatan
                   </h1>
-                  {parseData(recipe[correctIndex(id)].intruksiResep)}
+                  {parseData(fetchData(id)[0].intruksiResep)}
                 </div>
               </div>
             </div>

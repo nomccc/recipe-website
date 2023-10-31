@@ -10,6 +10,7 @@ const Input = ({
   value,
   onChange,
   maxLength,
+  ref,
 }) => {
   return (
     <div className="flex flex-col gap-y-2 my-2">
@@ -26,6 +27,7 @@ const Input = ({
         className={classname}
         onChange={onChange}
         maxLength={maxLength}
+        ref={ref}
       ></input>
     </div>
   );
