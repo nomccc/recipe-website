@@ -8,7 +8,6 @@ import UpdateRecipe from "../pages/Admin/UpdateRecipe/UpdateRecipe";
 import DetailRecipe from "../pages/Admin/DetailRecipe/DetailRecipe";
 import DeleteRecipe from "../pages/Admin/DeleteRecipe/DeleteRecipe";
 import Login from "../pages/Login/Login";
-import AllRecipe from "../pages/AllRecipe/AllRecipe";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import Kontribusi from "../pages/Kontribusi/Kontribusi";
 import AuthRoute from "./AuthRoute";
@@ -19,13 +18,12 @@ const Routing = () => {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/kontribusi" element={<Kontribusi />} />
-      <Route path="/recipe" element={<AllRecipe/>} />
-      <Route element={<AuthRoute/>}>
+      <Route path="/readRecipe/:id" element={<DetailRecipe />} />
+      <Route path="/readRecipe" element={<ReadRecipe />} />
+      <Route element={<AuthRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/readRecipe/:id" element={<DetailRecipe />} />
         <Route path="/updateRecipe/:id" element={<UpdateRecipe />} />
         <Route path="/createRecipe" element={<CreateRecipe />} />
-        <Route path="/readRecipe" element={<ReadRecipe />} />
         <Route path="/updateRecipe" element={<UpdateRecipe />} />
         <Route path="/deleteRecipe" element={<DeleteRecipe />} />
         <Route path="*" element={<ErrorPage />} />

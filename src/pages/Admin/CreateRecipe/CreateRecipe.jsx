@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Input from "../../../components/Input/Input";
 import Button from "../../../components/Button/Button";
@@ -8,12 +8,14 @@ import { postRecipe } from "../../../api/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-
+import { supabase } from "../../../supabase/client";
+import { v4 as uuidv4 } from "uuid";
+import { useAuth } from "../../../context/AuthProvider";
 
 const CreateRecipe = () => {
   const [berhasil, setBerhasil] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const classInput = " bg-white px-4 py-1 border-2 rounded-lg";
 
@@ -29,21 +31,8 @@ const CreateRecipe = () => {
       theme: "light",
     });
 
-  const notifyFailed = () => {
-    toast.error("Buat resep gagal!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  };
-
   const [recipe, setRecipe] = useState({
-    id: 1,
+    id: "1",
     pembuatResep: "",
     namaResep: "",
     deskripsiResep: "",
@@ -79,9 +68,59 @@ const CreateRecipe = () => {
     }
   }
 
+  const [media, setMedia] = useState([]);
+  const [userId, setUserId] = useState('')
+
+  const getUser = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user !== null) {
+        setUserId(user.id)
+      } else {
+        setUserId('')
+      }
+    } catch (e) {}
+  };
+
+  async function uploadImage(e) {
+    let file = e.target.files[0];
+
+    const { data, error } = await supabase.storage
+      .from("images")
+      .upload(userId + "/" + uuidv4(), file);
+
+    if (data) {
+      console.log(data);
+      getMedia();
+    } else {
+      console.log(error);
+    }
+  }
+
+  async function getMedia() {
+    const { data, error } = await supabase.storage
+      .from("images")
+      .list(userId + "/", {
+        limit: 10,
+        offset: 0,
+        sortBy: {
+          column: "name",
+          order: "asc",
+        },
+      });
+
+    if (data) {
+      setMedia(data);
+    } else {
+      console.log(error);
+    }
+  }
+
   function checkSubmit(event) {
     // menghitung id berdasarkan id sebelumnya
-    event.preventDefault()
+    event.preventDefault();
     const newId = recipe.id + 1;
 
     const newRecipe = {
@@ -104,9 +143,14 @@ const CreateRecipe = () => {
     });
 
     setBerhasil(true);
-    navigate('/readRecipe')
+    navigate("/readRecipe");
     notifySuccess();
   }
+
+  useEffect(() => {
+    getUser()
+    getMedia()
+  }, [userId])
 
   return (
     <Sidebar>
@@ -256,6 +300,7 @@ const CreateRecipe = () => {
                           gambarResep: URL.createObjectURL(e.target.files[0]),
                         };
                       });
+                      uploadImage(e);
                     } else {
                       setError({
                         ...error,
@@ -278,7 +323,6 @@ const CreateRecipe = () => {
                 theme="snow"
                 value={recipe.bahanResep}
                 onChange={(value) => {
-                  console.log(value);
                   setRecipe((prev) => {
                     return {
                       ...prev,
@@ -298,7 +342,6 @@ const CreateRecipe = () => {
                 theme="snow"
                 value={recipe.intruksiResep}
                 onChange={(value) => {
-                  console.log(value);
                   setRecipe((prev) => {
                     return {
                       ...prev,

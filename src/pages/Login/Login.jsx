@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 import Button from "../../components/Button/Button";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const emailRef = useRef(null);
@@ -10,6 +11,18 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const notifySuccess = () =>
+  toast.success("Login berhasil!", {
+    position: "top-center",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +46,7 @@ const Login = () => {
       setErrorMsg("Email or Password Incorrect");
     }
     setLoading(false);
+    notifySuccess()
   };
 
   return (
@@ -53,7 +67,8 @@ const Login = () => {
           ref={passwordRef}
           placeholder="password"
           className="border-b-2 w-full p-3 mb-8 "
-        />
+          />
+          <p className="mb-5 text-red-600">{errorMsg}</p>
         <Button text="Login" className="my-5" />
       </form>
     </div>

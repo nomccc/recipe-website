@@ -6,11 +6,9 @@ import {
   IoLogOutOutline,
 } from "react-icons/io5";
 import { createClient } from "@supabase/supabase-js";
+import { supabase } from "../../supabase/client";
 
 const Sidebar = ({ children }) => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_ANON_PUBLIC_SUPABASE;
-  const supabase = createClient(supabaseUrl, supabaseKey);
 
   const navigate = useNavigate();
 

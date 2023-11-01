@@ -1,30 +1,74 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { toast } from "react-toastify";
 
 const Kontribusi = () => {
   const form = useRef();
 
+  const notifySuccess = () =>
+    toast.success("Buat resep berhasil!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
   const sendEmail = (e) => {
     e.preventDefault();
-
-    emailjs
-      .sendForm(
-        "service_dwju9ir",
-        "template_zpbz7d8",
-        form.current,
-        "5Yg2GRUQx-w3DDE7k"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
+    if (
+      isi.nama === "" ||
+      isi.nama == null ||
+      isi.email === "" ||
+      isi.email == null ||
+      isi.gambar === "" ||
+      isi.gambar == null ||
+      isi.resep === "" ||
+      isi.resep == null
+    ) {
+      e.preventDefault();
+    } else {
+      emailjs
+        .sendForm(
+          `${import.meta.env.VITE_SERVICE_ID_EMAILJS}`,
+          `${import.meta.env.VITE_TEMPLATE_ID_EMAILJS}`,
+          form.current,
+          `${import.meta.env.VITE_PUBLIC_KEY_EMAILJS}`
+        )
+        .then(
+          (result) => {
+            console.log(result.text);
+            // console.log("berhasil");
+            notifySuccess();
+          },
+          (error) => {
+            console.log(error.text);
+            // console.log("gagal");
+          }
+        );
+    }
   };
+
+  const [isi, setIsi] = useState({
+    nama: "",
+    email: "",
+    gambar: "",
+    resep: "",
+  });
+
+  const [error, setError] = useState({
+    nama: "",
+    email: "",
+    gambar: "",
+    resep: "",
+  });
 
   return (
     <div className="m-10">
@@ -52,6 +96,14 @@ const Kontribusi = () => {
             name="user_name"
             placeholder="Budi"
             classname="border-2 rounded-lg px-4 py-1"
+            onChange={(e) => {
+              setIsi((old) => {
+                return {
+                  ...old,
+                  nama: e.target.value,
+                };
+              });
+            }}
           />
           <Input
             type="email"
@@ -60,18 +112,51 @@ const Kontribusi = () => {
             name="user_email"
             placeholder="budi@gmail.com"
             classname="border-2 rounded-lg px-4 py-1"
+            onChange={(e) => {
+              setIsi((old) => {
+                return {
+                  ...old,
+                  email: e.target.value,
+                };
+              });
+            }}
           />
           <div className="flex flex-col my-4 gap-y-2">
             <label htmlFor="message" className="text-lg font-semibold ">
               Masukkan resep kamu
             </label>
             <textarea
+            className="border-2"
               name="message"
               id="message"
-              cols="73"
+              cols="30"
               rows="5"
-              className="border-2 rounded-lg px-4 py-1"
+              onChange={(value) => {
+                console.log(value);
+                setIsi((prev) => {
+                  return {
+                    ...prev,
+                    resep: value,
+                  };
+                });
+              }}
             ></textarea>
+            {/* <ReactQuill
+              className="my-2"
+              id="message"
+              theme="snow"
+              name="message"
+              value={isi.resep}
+              onChange={(value) => {
+                console.log(value)
+                setIsi((prev) => {
+                  return {
+                    ...prev,
+                    resep: value,
+                  };
+                });
+              }}
+            /> */}
             <p className="text-gray-400">
               <span className="text-red-400">* </span>Resep terdiri dari nama
               resep, deskripsi singkat terkait resep, waktu pembuatan, porsi
@@ -79,32 +164,53 @@ const Kontribusi = () => {
             </p>
           </div>
           <Input
-            name="gambarResep"
+            name="user_image"
             text="Gambar Resep"
-            id="gambarResep"
+            id="user_image"
             classname="mb-8"
             type="file"
             onChange={(e) => {
+              console.log(e.target.value);
               const file = e.target.files[0];
+              if (file.size > 50) {
+                setError((old) => {
+                  return {
+                    ...old,
+                    gambar: "Ukuran foto maksimal 50kb",
+                  };
+                });
+              } else {
+                setError((old) => {
+                  return {
+                    ...old,
+                    gambar: "",
+                  };
+                });
+              }
+
               if (
                 file &&
                 (file.type === "image/jpeg" || file.type === "image/png")
               ) {
-                setRecipe((old) => {
+                setIsi((old) => {
+                  console.log(file);
                   return {
                     ...old,
-                    gambarResep: URL.createObjectURL(e.target.files[0]),
+                    gambar: URL.createObjectURL(e.target.files[0]),
                   };
                 });
               } else {
                 setError({
                   ...error,
-                  gambarResep: "Please choose a JPG or PNG file",
+                  gambar: "Please choose a JPG or PNG file",
                 });
               }
             }}
           />
-          <button className="text-center p-3 rounded-lg mx-auto bg-orange-500 text-white">Submit</button>
+          <h1 className="text-red-600 mb-10">{error.gambar}</h1>
+          <button className="text-center p-3 rounded-lg mx-auto bg-orange-500 text-white">
+            Submit
+          </button>
         </div>
       </form>
     </div>

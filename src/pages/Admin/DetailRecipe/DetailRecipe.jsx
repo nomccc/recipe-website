@@ -56,6 +56,10 @@ const DetailRecipe = () => {
       .catch((error) => console.log("error => ", error));
   }, []);
 
+  
+  const token = sessionStorage.getItem('token')
+
+
   return (
     <div className="container">
       <div className="m-16">
@@ -68,6 +72,7 @@ const DetailRecipe = () => {
         {!loading ? (
           recipe.length > 0 ? (
             <div>
+              {token != null ? (
               <div className="text-center flex justify-end ">
                 <Link to={`/updateRecipe/${id}`}>
                 <button className="bg-yellow-400 px-4 py-2 rounded-md mx-5 text-white hover:bg-orange-400">
@@ -112,6 +117,9 @@ const DetailRecipe = () => {
                   </div>
                 </dialog>
               </div>
+              ) : (
+                <div></div>
+              )}
               <article>
                 <h1 className="font-bold text-7xl">
                   {fetchData(id)[0].namaResep}

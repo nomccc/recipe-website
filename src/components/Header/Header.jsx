@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 
 const Header = () => {
+  
+  
+
   const { user } = useAuth();
-  console.log(user);
 
   return (
     <nav className="w-full flex p-4">
@@ -15,7 +17,7 @@ const Header = () => {
       <div className="basis-2/4 flex justify-center items-center">
         <ul className="flex gap-7 font-semibold">
           <Link to="/">Beranda</Link>
-          <Link to="/recipe">Resep</Link>
+          <Link to="/readRecipe">Resep</Link>
           <Link to="/kontribusi">Ayo Kontribusi!</Link>
         </ul>
       </div>
